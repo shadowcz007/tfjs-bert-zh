@@ -2,9 +2,6 @@ const tf = require('@tensorflow/tfjs-node')
 const BertWordPieceTokenizer = require("tokenizers").BertWordPieceTokenizer;
 const KMeans = require("tf-kmeans");
 
-
-
-
 class Bert {
     constructor(opts = {}) {
         this.modelUrl = opts.modelUrl || './model/bert_zh_L-12_H-768_A-12_2';
@@ -100,8 +97,8 @@ class Clusters {
             ds
         );
 
-        console.log("Assigned To ", predictions.arraySync());
-        console.log("Centroids Used are ", kmeans.Centroids().arraySync());
+        // console.log("Assigned To ", predictions.arraySync());
+        // console.log("Centroids Used are ", kmeans.Centroids().arraySync());
         // console.log("Prediction for Given Value is");
         // kmeans.Predict(tf.tensor([2, 3, 2])).print();
         return predictions.arraySync();
