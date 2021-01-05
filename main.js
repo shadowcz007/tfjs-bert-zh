@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const tf = require('@tensorflow/tfjs-node')
 const { BertWordPieceTokenizer } = require('@nlpjs/bert-tokenizer')
 const KMeans = require("tf-kmeans");
@@ -7,9 +8,10 @@ const KMeans = require("tf-kmeans");
 // downloadModel.init();
 
 class Bert {
+
     constructor(opts = {}) {
-        this.modelLocalPath = opts.modelLocalPath || './model/bert_zh_L-12_H-768_A-12_2';
-        this.vocabFile = opts.vocabFile || "./assets/vocab.txt";
+        this.modelLocalPath = opts.modelLocalPath || path.join(__dirname, 'model/bert_zh_L-12_H-768_A-12_2');
+        this.vocabFile = opts.vocabFile || path.join(__dirname, 'assets/vocab.txt');
     }
 
     async init() {
