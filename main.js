@@ -3,15 +3,18 @@ const tf = require('@tensorflow/tfjs-node')
 const { BertWordPieceTokenizer } = require('@nlpjs/bert-tokenizer')
 const KMeans = require("tf-kmeans");
 
+// const downloadModel = require("./downloadModel");
+// downloadModel.init();
+
 class Bert {
     constructor(opts = {}) {
-        this.modelUrl = opts.modelUrl || './model/bert_zh_L-12_H-768_A-12_2';
+        this.modelLocalPath = opts.modelLocalPath || './model/bert_zh_L-12_H-768_A-12_2';
         this.vocabFile = opts.vocabFile || "./assets/vocab.txt";
     }
 
     async init() {
         let vocabContent = fs.readFileSync(this.vocabFile, "utf-8");
-        this.model = await tf.node.loadSavedModel(this.modelUrl);
+        this.model = await tf.node.loadSavedModel(this.modelLocalPath);
         this.tokenizer = new BertWordPieceTokenizer({ vocabContent: vocabContent })
     }
     predict(text) {

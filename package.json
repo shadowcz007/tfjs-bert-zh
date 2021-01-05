@@ -12,6 +12,8 @@
         "@nlpjs/bert-tokenizer": "^4.17.0",
         "@tensorflow/tfjs": "^2.8.0",
         "@tensorflow/tfjs-node": "^2.8.0",
+        "request": "^2.88.2",
+        "request-progress": "^3.0.0",
         "tf-kmeans": "0.0.3"
     }
 }

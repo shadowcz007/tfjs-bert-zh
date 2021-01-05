@@ -44,6 +44,7 @@ node_modules/
 jspm_packages/
 
 model/
+model*/
 
 # TypeScript v1 declaration files
 typings/
