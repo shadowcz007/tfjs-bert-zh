@@ -1,19 +1,17 @@
 {
     "name": "bert",
-    "version": "1.0.0",
-    "description": "",
+    "version": "1.0.1",
+    "description": "bert中文预训练模型，用于提取词向量",
     "main": "main.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "node test.js"
     },
     "author": "shadow",
     "license": "MIT",
     "dependencies": {
-        "@tensorflow-models/universal-sentence-encoder": "^1.3.2",
+        "@nlpjs/bert-tokenizer": "^4.17.0",
         "@tensorflow/tfjs": "^2.8.0",
         "@tensorflow/tfjs-node": "^2.8.0",
-        "tf-kmeans": "0.0.3",
-        "@nlpjs/bert-tokenizer": "^4.17.0",
-        "tokenizers": "^0.7.0"
+        "tf-kmeans": "0.0.3"
     }
 }

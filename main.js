@@ -1,19 +1,22 @@
+const fs = require("fs");
 const tf = require('@tensorflow/tfjs-node')
-const BertWordPieceTokenizer = require("tokenizers").BertWordPieceTokenizer;
+const { BertWordPieceTokenizer } = require('@nlpjs/bert-tokenizer')
 const KMeans = require("tf-kmeans");
 
 class Bert {
     constructor(opts = {}) {
         this.modelUrl = opts.modelUrl || './model/bert_zh_L-12_H-768_A-12_2';
-        this.vocabFile = opts.vocabFile || "./model/bert_zh_L-12_H-768_A-12_2/assets/vocab.txt";
+        this.vocabFile = opts.vocabFile || "./assets/vocab.txt";
     }
 
     async init() {
+        let vocabContent = fs.readFileSync(this.vocabFile, "utf-8");
         this.model = await tf.node.loadSavedModel(this.modelUrl);
-        this.tokenizer = await BertWordPieceTokenizer.fromOptions({ vocabFile: this.vocabFile });
+        this.tokenizer = new BertWordPieceTokenizer({ vocabContent: vocabContent })
     }
-    async predict(text) {
-        const wpEncoded = await this.tokenizer.encode(text);
+    predict(text) {
+
+        const wpEncoded = this.tokenizer.encodeQuestion(text);
         // console.log(wpEncoded.length);
         // console.log(wpEncoded.ids);
         // console.log(wpEncoded.attentionMask);
@@ -55,10 +58,10 @@ class Bert {
     async textsRank(target = "", texts = []) {
         this.vectors = [];
         let vs = [];
-        let targetVector = (await this.predict(target)).dataSync();
+        let targetVector = (this.predict(target)).dataSync();
         for (let index = 0; index < texts.length; index++) {
             const w = texts[index];
-            vs.push((await this.predict(w)).dataSync());
+            vs.push((this.predict(w)).dataSync());
         };
 
         // console.log(vs)
@@ -73,8 +76,6 @@ class Bert {
         this.vectors = vs;
         return scores
     }
-
-
 }
 
 
