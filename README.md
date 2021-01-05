@@ -3,4 +3,4 @@
 
 
 # model
-bert_zh_L-12_H-768_A-12_2
+[bert_zh_L-12_H-768_A-12_2](https://tfhub.dev/tensorflow/bert_zh_L-12_H-768_A-12/2)
