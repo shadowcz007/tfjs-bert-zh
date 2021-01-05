@@ -10,9 +10,10 @@
 
 
 const { Bert, Clusters } = require('./main');
+const path = require("path");
 
 let bert = new Bert({
-    modelLocalPath: "./model/bert_zh_L-12_H-768_A-12_2"
+    modelLocalPath: path.join(__dirname, 'model/bert_zh_L-12_H-768_A-12_2')
 });
 let clusters = new Clusters();
 let fulltext = `全球影视行业正在经历一场颠覆与创新并存的革命。
