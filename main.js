@@ -4,6 +4,8 @@ const tf = require('@tensorflow/tfjs-node')
 const { BertWordPieceTokenizer } = require('@nlpjs/bert-tokenizer')
 const KMeans = require("tf-kmeans");
 
+const md5 = require('md5');
+
 // const downloadModel = require("./downloadModel");
 // downloadModel.init();
 
@@ -12,6 +14,7 @@ class Bert {
     constructor(opts = {}) {
         this.modelLocalPath = opts.modelLocalPath || path.join(__dirname, 'model/bert_zh_L-12_H-768_A-12_2');
         this.vocabFile = opts.vocabFile || path.join(__dirname, 'assets/vocab.txt');
+        this.store = {};
     }
 
     async init() {
@@ -21,22 +24,35 @@ class Bert {
     }
     predict(text) {
 
-        const wpEncoded = this.tokenizer.encodeQuestion(text);
-        // console.log(wpEncoded.length);
-        // console.log(wpEncoded.ids);
-        // console.log(wpEncoded.attentionMask);
-        // console.log(wpEncoded.offsets);
-        // console.log(wpEncoded.overflowing);
-        // console.log(wpEncoded.specialTokensMask);
-        // console.log(wpEncoded.typeIds);
-        // console.log(wpEncoded.wordIndexes);
-        var xs = this.model.predict({
-            input_mask: tf.tensor1d(wpEncoded.attentionMask, "int32").expandDims(0),
-            input_type_ids: tf.tensor1d(wpEncoded.typeIds, "int32").expandDims(0),
-            input_word_ids: tf.tensor1d(wpEncoded.ids, "int32").expandDims(0)
-        });
-        //console.log(xs.transformer_encoder)
-        return xs.transformer_encoder;
+            const wpEncoded = this.tokenizer.encodeQuestion(text);
+            // console.log(wpEncoded.length);
+            // console.log(wpEncoded.ids);
+            // console.log(wpEncoded.attentionMask);
+            // console.log(wpEncoded.offsets);
+            // console.log(wpEncoded.overflowing);
+            // console.log(wpEncoded.specialTokensMask);
+            // console.log(wpEncoded.typeIds);
+            // console.log(wpEncoded.wordIndexes);
+            var xs = this.model.predict({
+                input_mask: tf.tensor1d(wpEncoded.attentionMask, "int32").expandDims(0),
+                input_type_ids: tf.tensor1d(wpEncoded.typeIds, "int32").expandDims(0),
+                input_word_ids: tf.tensor1d(wpEncoded.ids, "int32").expandDims(0)
+            });
+            //console.log(xs.transformer_encoder)
+            return xs.transformer_encoder;
+        }
+        //清理缓存
+    autoClearStore() {
+            if ((Object.keys(this.store)).length > 1500) this.store = {};
+        }
+        //预测并缓存
+    predictAndStore(text) {
+        let id = md5(text);
+        if (this.store[id]) return this.store[id];
+        this.autoClearStore();
+        let vector = (this.predict(text)).dataSync();
+        this.store[id] = vector;
+        return vector
     }
     cosineSimilarity(vector1XY, vector2XY) {
         let v1DotV2 = 0;
@@ -63,17 +79,18 @@ class Bert {
     async textsRank(target = "", texts = []) {
         this.vectors = [];
         let vs = [];
-        let targetVector = (this.predict(target)).dataSync();
+        let targetVector = this.predictAndStore(target);
         for (let index = 0; index < texts.length; index++) {
             const w = texts[index];
-            vs.push((this.predict(w)).dataSync());
+            vs.push(this.predictAndStore(w));
         };
 
         // console.log(vs)
         let scores = Array.from(vs, (v, i) => {
             return {
                 score: this.cosineSimilarity(targetVector, v),
-                word: texts[i]
+                word: texts[i],
+                index: i
             }
         });
         scores = scores.sort((a, b) => b.score - a.score);
