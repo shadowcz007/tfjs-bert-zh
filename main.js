@@ -18,9 +18,13 @@ class Bert {
     }
 
     async init() {
-        let vocabContent = fs.readFileSync(this.vocabFile, "utf-8");
-        this.model = await tf.node.loadSavedModel(this.modelLocalPath);
-        this.tokenizer = new BertWordPieceTokenizer({ vocabContent: vocabContent })
+            let vocabContent = fs.readFileSync(this.vocabFile, "utf-8");
+            this.model = await tf.node.loadSavedModel(this.modelLocalPath);
+            this.tokenizer = new BertWordPieceTokenizer({ vocabContent: vocabContent })
+        }
+        //去除标点等处理
+    tokenizerInit(text) {
+        return text.trim().replace(/\s/ig, "").slice(0, 500);
     }
     predict(text) {
 
