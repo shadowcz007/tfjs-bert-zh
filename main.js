@@ -27,7 +27,7 @@ class Bert {
         return text.trim().replace(/\s/ig, "").slice(0, 500);
     }
     predict(text) {
-
+            text = this.tokenizerInit(text);
             const wpEncoded = this.tokenizer.encodeQuestion(text);
             // console.log(wpEncoded.length);
             // console.log(wpEncoded.ids);
