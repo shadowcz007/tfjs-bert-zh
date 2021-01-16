@@ -50,14 +50,22 @@ class Bert {
             if ((Object.keys(this.store)).length > 1500) this.store = {};
         }
         //预测并缓存
-    predictAndStore(text) {
-        let id = md5(text);
+    predictAndStore(text = null, type = "tensor") {
+        let id = md5(`${text}__${type}`);
         if (this.store[id]) return this.store[id];
         this.autoClearStore();
-        let vector = (this.predict(text)).dataSync();
-        this.store[id] = vector;
-        return vector
+        if (type == "tensor") {
+            let v = this.predict(text);
+            this.store[id] = v;
+            return
+        } else {
+            let v = (this.predict(text)).dataSync();
+            this.store[id] = v;
+        }
+
+        return this.store[id]
     }
+
     cosineSimilarity(vector1XY, vector2XY) {
         let v1DotV2 = 0;
         let absV1 = 0;
