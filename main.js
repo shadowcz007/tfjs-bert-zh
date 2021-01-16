@@ -57,7 +57,7 @@ class Bert {
         if (type == "tensor") {
             let v = this.predict(text);
             this.store[id] = v;
-            return
+            // return
         } else {
             let v = (this.predict(text)).dataSync();
             this.store[id] = v;
