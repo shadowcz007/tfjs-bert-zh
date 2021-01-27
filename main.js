@@ -52,7 +52,10 @@ class Bert {
         //预测并缓存
     predictAndStore(text = null, type = "tensor") {
         let id = md5(`${text}__${type}`);
-        if (this.store[id]) return this.store[id];
+        if (this.store[id]) {
+            if (type == "tensor") return tf.tensor(this.store[id])
+            return this.store[id];
+        }
         this.autoClearStore();
         if (type == "tensor") {
             let v = this.predict(text);
