@@ -1,6 +1,6 @@
 {
     "name": "bert",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "bert中文预训练模型，用于提取词向量",
     "main": "main.js",
     "scripts": {
